@@ -1,10 +1,15 @@
 package view;
 
+import models.Productos;
 import models.Usuarios;
 
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
 import static models.Usuarios.mostrarPerfil;
+import static models.Usuarios.historicoVenta;
+import static models.Usuarios.historicoCompra;
+import static models.Productos.catalogoProductos;
 
 public class Main {
     public static void main(String[] args) {
@@ -12,7 +17,11 @@ public class Main {
         //Objetos
         Usuarios usuario1 = new Usuarios("admin", "1234", "admin@gmail.com");
         Usuarios usuario2 = new Usuarios("Javier", "1234", "javier@gmail.com");
+        Productos producto1 = new Productos("P001","Laptop Gamer","ASUS",1000,5, LocalDateTime.now().minusDays(5),"admin@gmail.com");
+        Productos producto2 = new Productos("P002","Ratón Inalámbrico","HP",30,10,LocalDateTime.now().minusDays(1),"javier@gmail.com");
+        Productos productoNuevo = new Productos("","","",0,0,null,"null");
         Usuarios usuarioActual = null;
+        //Variables
         int op;
         System.out.println("""
                  ________                                                 _______            _______ \s
@@ -39,6 +48,7 @@ public class Main {
             String emailTeclado = s.nextLine();
             System.out.print("Introduce tu clave de usuario: ");
             String claveTeclado = s.nextLine();
+            //Validación de credenciales
             if (usuario1.verificarCredenciales(emailTeclado, claveTeclado)) {
                 usuarioActual = usuario1;
                 System.out.println("\nBienvenido " + usuarioActual.getNombre() + "!");
@@ -48,6 +58,7 @@ public class Main {
             } else System.out.println("\nCredenciales incorrectas. Inténtalo de nuevo.");
         }
         do {
+            //MENU PRINCIPAL
             System.out.print("""
                     *******************************
                             Menú de usuario
@@ -61,11 +72,18 @@ public class Main {
                     8. Ver mi histórico de compras
                     9. Salir
                     Introduzca la opción:\s""");
-            op = Integer.parseInt(s.nextLine());
+            //Validamos la entrada de datos para que solo acepte números
+            if (s.hasNextInt()) {
+                op = s.nextInt(); // Si es número, lo leemos
+            } else {
+                op = -1; // Si son letras o basura, ponemos opción inválida
+            }
+            s.nextLine();
             if (op < 0 || op > 9) System.out.println("Opción incorrecta");
             else {
                 switch (op) {
                     case 1: //Mostrar mi perfil de usuario
+                        //Muestro el método creado en la clase Usuarios
                         mostrarPerfil(usuarioActual);
                         break;
                     case 2: //Cambiar mis datos personales
@@ -75,11 +93,18 @@ public class Main {
                             System.out.print("""
                                     =========================================
                                     CAMBIAR MIS DATOS PERSONALES
-                                    1.Cambiar Nombre
-                                    2.Cambiar clave
+                                    1. Cambiar Nombre
+                                    2. Cambiar clave
+                                    3. Salir
                                     Introduzca una opción:\s""");
-                            op2 = Integer.parseInt(s.nextLine());
-                            if (op2 < 1 || op2 > 2) System.out.println("Opción incorrecta");
+                            //Validamos la entrada de datos para que solo acepte números
+                            if (s.hasNextInt()) {
+                                op2 = s.nextInt();
+                            } else {
+                                op2 = -1;
+                            }
+                            s.nextLine(); // Limpiar el buffer
+                            if (op2 < 1 || op2 > 3) System.out.println("Opción incorrecta");
                             else {
                                 switch (op2) {
                                     case 1:
@@ -94,23 +119,111 @@ public class Main {
                                         usuarioActual.setClave(nuevaClave);
                                         System.out.println("Clave actualizada correctamente.");
                                         break;
+                                    case 3:
+                                        System.out.println("Volviendo al menú principal del usuario " + usuarioActual.getNombre());
+                                        break;
                                     default:
                                         System.out.println("Opción no válida");
                                 }
                             }
-                        } while (op2 < 1 || op2 > 2);
+                        } while (op2 != 3);
                         break;
                     case 3: //Ver mis productos en venta
+                        boolean tengoAlgo = false;
+                        System.out.println("\n=== MIS PRODUCTOS EN VENTA (" + usuarioActual.getNombre() + ") ===");
+
+                        // Miramos el Producto 1
+                        if (producto1.getEmailVendedor().equals(usuarioActual.getEmail())) {
+                            System.out.println("- " + producto1.getNombre() + " (" + producto1.getPrecio() + "€) - Código: " + producto1.getCodigo());
+                            tengoAlgo = true;
+                        }
+
+                        // Miramos el Producto 2
+                        if (producto2.getEmailVendedor().equals(usuarioActual.getEmail())) {
+                            System.out.println("- " + producto2.getNombre() + " (" + producto2.getPrecio() + "€) - Código: " + producto2.getCodigo());
+                            tengoAlgo = true;
+                        }
+
+                        // Miramos el Producto Nuevo (si existe)
+                        if (!productoNuevo.getCodigo().isEmpty() && productoNuevo.getEmailVendedor().equals(usuarioActual.getEmail())) {
+                            System.out.println("- " + productoNuevo.getNombre() + " (" + productoNuevo.getPrecio() + "€) - Código: " + productoNuevo.getCodigo());
+                            tengoAlgo = true;
+                        }
+                        if (!tengoAlgo) System.out.println("No tienes productos en venta.");
                         break;
                     case 4: //Cerrar la venta de un producto o quitarlo de la venta
+                        System.out.println("\n=== ELIMINAR PRODUCTOS ===");
+                        System.out.println("Tus productos disponibles:");
+                        //Variable que válida si hay productos para borrar o no
+                        boolean hayParaBorrar = false;
+
+                        if (producto1.getEmailVendedor().equals(usuarioActual.getEmail()) && !producto1.getCodigo().isEmpty()) {
+                            System.out.println("- " + producto1.getCodigo() + " (" + producto1.getNombre() + ")");
+                            hayParaBorrar = true;
+                        }
+                        if (producto2.getEmailVendedor().equals(usuarioActual.getEmail()) && !producto2.getCodigo().isEmpty()) {
+                            System.out.println("- " + producto2.getCodigo() + " (" + producto2.getNombre() + ")");
+                            hayParaBorrar = true;
+                        }
+                        //La validación de getEmailVendedor sirve para comparar el vendedor con el nombre del usuario
+                        if (!productoNuevo.getCodigo().isEmpty() && productoNuevo.getEmailVendedor().equals(usuarioActual.getEmail())) {
+                            System.out.println("- " + productoNuevo.getCodigo() + " (" + productoNuevo.getNombre() + ")");
+                            hayParaBorrar = true;
+                        }
+
+                        if (!hayParaBorrar) {
+                            System.out.println("No tienes productos para borrar.");
+                        } else {
+                            System.out.print("Introduce el código del producto para eliminarlo: ");
+                            //Variable que nos ayuda a encontrar el producto mediante su código
+                            String codigoBorrar = s.nextLine();
+                            boolean borrado = false;
+                            //Validación y chequeo del borrado del producto dependiendo del producto que se haya elegido por código
+                            if (producto1.getCodigo().equals(codigoBorrar) && producto1.getEmailVendedor().equals(usuarioActual.getEmail())) {
+                                producto1.setCodigo(""); // Al dejar el código vacío, el sistema lo ignora
+                                producto1.setNombre("Eliminado");
+                                producto1.setPrecio(0);
+                                producto1.setCantidad(0);
+                                producto1.setEmailVendedor(""); // Le quitamos el dueño
+                                borrado = true;
+                            }else if (producto2.getCodigo().equals(codigoBorrar) && producto2.getEmailVendedor().equals(usuarioActual.getEmail())) {
+                                producto2.setCodigo("");
+                                producto2.setNombre("Eliminado");
+                                producto2.setPrecio(0);
+                                producto2.setCantidad(0);
+                                producto2.setEmailVendedor("");
+                                borrado = true;
+                            }else if (productoNuevo.getCodigo().equals(codigoBorrar) && productoNuevo.getEmailVendedor().equals(usuarioActual.getEmail())) {
+                                productoNuevo.setCodigo("");
+                                productoNuevo.setNombre("");
+                                productoNuevo.setPrecio(0);
+                                productoNuevo.setCantidad(0);
+                                productoNuevo.setEmailVendedor("");
+                                borrado = true;
+                            }
+                            if (borrado) {
+                                System.out.println("El producto ha sido eliminado correctamente");
+                            } else {
+                                System.out.println("""
+                                        ======ERROR======
+                                        Código no encontrado o no eres el dueño de ese producto""");
+                            }
+                        }
                         break;
                     case 5: //Poner a la venta un nuevo producto
+                        //Le pasamos el scanner, el producto vacío y el dueño asociado
+                        Productos.nuevoProducto(s,productoNuevo, usuarioActual.getEmail());
                         break;
                     case 6: //Ver todos los productos en venta de la aplicación
+                        catalogoProductos(producto1,producto2,productoNuevo);
                         break;
                     case 7: //Ver mi histórico de ventas
+                        //Muestro el método creado en la clase Usuarios
+                        historicoVenta(usuarioActual);
                         break;
                     case 8: //Ver mi histórico de compras
+                        //Muestro el método creado en la clase Usuarios
+                        historicoCompra(usuarioActual);
                         break;
                     case 9: //Salir
                         System.out.println("APAGANDO EL PROGRAMA...");
