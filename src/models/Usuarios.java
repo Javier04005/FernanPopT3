@@ -9,10 +9,10 @@ public class Usuarios {
     private String email;
 
     //Variables de las ventas y las compras
-    double precioFinal;
-    String puntuacion;
-    String comentario;
-    LocalDateTime fecha;
+    private double precioFinal;
+    private String puntuacion;
+    private String comentario;
+    private LocalDateTime fecha;
 
     //Constructor principal
     public Usuarios(String nombre, String clave, String email) {
@@ -93,41 +93,6 @@ public class Usuarios {
     public boolean verificarCredenciales(String emailTeclado, String claveTeclado) {
         // Compara si el email y la clave coinciden con los datos almacenados
         return this.email.equals(emailTeclado) && this.clave.equals(claveTeclado);
-    }
-    //Menú Perfil del usuario
-    public static void mostrarPerfil(Usuarios usuario) {
-        System.out.println("\n--- Perfil de Usuario ---");
-        System.out.println("Nombre: " + usuario.getNombre());
-        System.out.println("Email: " + usuario.getEmail());
-        System.out.println("-------------------------\n");
-    }
-    //Método historial de venta del usuario
-    public static void historicoVenta(Usuarios usuario){
-        if (usuario.getPrecioFinal() > 0){
-            System.out.println("\n-----Historial de ventas------");
-            System.out.println("Precio final: " + usuario.getPrecioFinal());
-            System.out.println("Email: " + usuario.getEmail());
-            System.out.println("Puntuación: " + usuario.getPuntuacion());
-            System.out.println("Comentario: " + usuario.getComentario());
-            if (usuario.getFecha() != null){
-                System.out.println("Fecha: " + usuario.getFecha().toLocalDate());
-            }
-        }else System.out.println("No hay ventas registradas actualmente");
-        System.out.println("------------------------------------------");
-    }
-    //Método historial de compra del usuario
-    public static void historicoCompra(Usuarios usuario){
-        if (usuario.getPrecioFinal() > 0){
-            System.out.println("\n-----Historial de compras------");
-            System.out.println("Gasto total: " + usuario.getPrecioFinal() + " euros");
-            System.out.println("Email: " + usuario.getEmail());
-            System.out.println("Puntuación: " + usuario.getPuntuacion());
-            System.out.println("Comentario: " + usuario.getComentario());
-            if (usuario.getFecha() != null){
-                System.out.println("Fecha: " + usuario.getFecha().toLocalDate());
-            }
-        }else System.out.println("No hay ventas registradas actualmente");
-        System.out.println("------------------------------------------");
     }
 }
 
