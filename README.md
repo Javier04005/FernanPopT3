@@ -33,6 +33,14 @@ La aplicación ofrece un sistema completo de gestión mediante un menú interact
 
 4-Historiales: Seguimiento detallado de ventas y compras realizadas, incluyendo precios, puntuaciones y comentarios de los compradores.
 
+<img width="512" height="202" alt="image" src="https://github.com/user-attachments/assets/05239765-ed46-4d21-ace4-3c7c656b762a" />
+
+🔑 Credenciales de Usuarios
+
+Usuario	Email	            Contraseña
+Admin	  admin@gmail.com	  1234
+Javier	javier@gmail.com	1234
+
 🛠️ Tecnologías Utilizadas
 
 Lenguaje: Java 17+
@@ -40,3 +48,23 @@ Lenguaje: Java 17+
 Estructura: Programación Orientada a Objetos (POO).
 
 Librerías: * java.time.LocalDateTime para la gestión de fechas.
+
+📂 Estructura del Proyecto
+
+El proyecto está organizado en los siguientes paquetes:
+
+view: Contiene la clase Main.java, que gestiona la lógica de los menús y la interacción con el usuario, tambíen contiene todos las funciones
+
+models: Contiene las clases de datos:
+
+Usuarios.java: Define los atributos del usuario, credenciales y datos de facturación.
+
+Productos.java: Define las características de los artículos en venta.
+
+💻 Instalación y Ejecución
+
+1-Descargar el archivo zip
+
+2-Descomprimirlo
+
+3-Ejecutar el .bat
