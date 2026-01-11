@@ -68,3 +68,8 @@ Productos.java: Define las características de los artículos en venta.
 2-Descomprimirlo
 
 3-Ejecutar el .bat
+
+El archivo de ejecución se encuentra en la carpeta src
+
+<img width="958" height="337" alt="image" src="https://github.com/user-attachments/assets/f95cc173-dda7-48dd-b70b-889ec5b14e36" />
+
